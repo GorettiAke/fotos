@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marian</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #e244fa;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .main-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(117, 4, 102, 0.2);
+        }
+        .upload-form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #b033d6;
+            border-radius: 10px;
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .upload-form input[type="file"] {
+            margin: 15px 0;
+        }
+        .upload-form button {
+            background-color: #d63384;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .upload-form button:hover {
+            background-color: #a4265e;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mis XV años</h1>
+    <h1>Marian</h1>
+    <img src="/static/images/foto.jpg" alt="Foto de Marian" class="main-image">
+
+    <form class="upload-form" id="uploadForm">
+        <p>Selecciona tus fotos o videos para compartir:</p>
+        <input type="file" id="fileInput" name="file" accept="image/*,video/*" multiple required>
+        <button type="submit">Subir</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const message = document.getElementById('message');
+
+            if (!fileInput.files.length) {
+                message.textContent = "Por favor, selecciona al menos un archivo.";
+                return;
+            }
+
+            message.textContent = "Subiendo archivos, por favor espera...";
+            const formData = new FormData();
+            for (const file of fileInput.files) {
+                formData.append('files', file);
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    message.textContent = "¡Tus archivos se han subido correctamente!";
+                } else {
+                    message.textContent = "Hubo un problema al subir tus archivos.";
+                }
+            } catch (error) {
+                message.textContent = "Error al conectar con el servidor.";
+            }
+        });
+    </script>
+</body>
+</html>
